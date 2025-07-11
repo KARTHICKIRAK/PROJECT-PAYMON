@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Recharge</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Using the existing CSS variables from your base styles */
+    :root {
+      --bg-color: #f8f9fa;
+      --text-color: #333;
+      --card-bg: #fff;
+      --box-bg: #f1f3f5;
+      --accent-color: #6c5ce7;
+      --accent-light: #a29bfe;
+      --hover-color: #5649c0;
+      --input-bg: #fff;
+      --input-border: #dadce0;
+      --error-color: #d63031;
+      --success-color: #00b894;
+      --warning-color: #fdcb6e;
+      --shadow-sm: 0 1px 2px rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+      --shadow-md: 0 1px 3px rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+      --shadow-lg: 0 10px 20px rgba(0,0,0,0.1);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
+    .dark-mode {
+      --bg-color: #121212;
+      --text-color: #f5f5f5;
+      --card-bg: #1e1e1e;
+      --box-bg: #2d3436;
+      --accent-color: #a29bfe;
+      --input-bg: #2d3436;
+      --input-border: #5f6368;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Google Sans', 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    /* Recharge Page Specific Styles */
+    .recharge-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      margin-bottom: 25px;
+      color: var(--accent-color);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .page-title i {
+      font-size: 26px;
+    }
+
+    .recharge-card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 25px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 30px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: var(--accent-color);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title i {
+      font-size: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid var(--input-border);
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--hover-color);
+      box-shadow: 0 4px 8px rgba(108, 92, 231, 0.3);
+    }
+
+    .btn-block {
+      display: block;
+      width: 100%;
+    }
+
+    /* Operator Selection */
+    .operator-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .operator-card {
+      background-color: var(--box-bg);
+      border-radius: var(--radius-sm);
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+    }
+
+    .operator-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .operator-card.selected {
+      border-color: var(--accent-color);
+      background-color: rgba(108, 92, 231, 0.1);
+    }
+
+    .operator-logo {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .operator-name {
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    /* Recharge Plans */
+    .plans-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 25px;
+    }
+
+    .plan-card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s;
+      border: 1px solid var(--input-border);
+      position: relative;
+    }
+
+    .plan-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--accent-color);
+    }
+
+    .plan-card.popular {
+      border: 2px solid var(--accent-color);
+    }
+
+    .popular-badge {
+      position: absolute;
+      top: -10px;
+      right: 15px;
+      background-color: var(--accent-color);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .plan-amount {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: var(--accent-color);
+    }
+
+    .plan-validity {
+      font-size: 14px;
+      color: var(--text-color);
+      opacity: 0.8;
+      margin-bottom: 15px;
+    }
+
+    .plan-details {
+      margin-top: 15px;
+      border-top: 1px dashed var(--input-border);
+      padding-top: 15px;
+    }
+
+    .plan-benefit {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .plan-benefit i {
+      color: var(--accent-color);
+      font-size: 16px;
+    }
+
+    .view-more {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .view-more-btn {
+      background: none;
+      border: none;
+      color: var(--accent-color);
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .operator-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .plans-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .operator-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .recharge-card {
+        padding: 20px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="recharge-container">
+    <h1 class="page-title">
+      <i class="fas fa-mobile-alt"></i>
+      Mobile Recharge
+    </h1>
+
+    <div class="recharge-card">
+      <h2 class="section-title">
+        <i class="fas fa-sim-card"></i>
+        Select Operator
+      </h2>
+
+      <div class="operator-grid">
+        <div class="operator-card selected" data-operator="airtel">
+          <img src="https://via.placeholder.com/50/e21818/FFFFFF?text=Airtel" alt="Airtel" class="operator-logo">
+          <div class="operator-name">Airtel</div>
+        </div>
+        
+        <div class="operator-card" data-operator="jio">
+          <img src="https://via.placeholder.com/50/FF6B6B/FFFFFF?text=Jio" alt="Jio" class="operator-logo">
+          <div class="operator-name">Jio</div>
+        </div>
+        
+        <div class="operator-card" data-operator="vi">
+          <img src="https://via.placeholder.com/50/9C51E0/FFFFFF?text=VI" alt="VI" class="operator-logo">
+          <div class="operator-name">VI</div>
+        </div>
+        
+        <div class="operator-card" data-operator="bsnl">
+          <img src="https://via.placeholder.com/50/FFA500/FFFFFF?text=BSNL" alt="BSNL" class="operator-logo">
+          <div class="operator-name">BSNL</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="mobileNumber">
+          <i class="fas fa-phone"></i>
+          Mobile Number
+        </label>
+        <input type="tel" id="mobileNumber" class="form-control" placeholder="Enter 10-digit mobile number" maxlength="10">
+      </div>
+
+      <div class="form-group">
+        <label for="rechargeAmount">
+          <i class="fas fa-rupee-sign"></i>
+          Recharge Amount
+        </label>
+        <input type="number" id="rechargeAmount" class="form-control" placeholder="Enter amount">
+      </div>
+
+      <button class="btn btn-primary btn-block">
+        <i class="fas fa-bolt"></i>
+        Proceed to Recharge
+      </button>
+    </div>
+
+    <div class="recharge-card">
+      <h2 class="section-title">
+        <i class="fas fa-gift"></i>
+        Popular Recharge Plans
+      </h2>
+
+      <div class="plans-container">
+        <!-- Airtel Plans -->
+        <div class="plan-card popular" data-operator="airtel">
+          <span class="popular-badge">Most Popular</span>
+          <div class="plan-amount">₹199</div>
+          <div class="plan-validity">Valid for 28 days</div>
+          <div class="plan-details">
+            <div class="plan-benefit">
+              <i class="fas fa-wifi"></i>
+              <span>1.5GB/day</span>
+            </div>
+            <div class="plan-benefit">
+              <i class="fas fa-phone"></i>
+              <span>Unlimited calls</span>
+            </div>
+            <div class="plan-benefit">
+              <i class="fas fa-sms"></i>
+              <span>100 SMS/day</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="margin-top: 15px; width: 100%;">
+            <i class="fas fa-shopping-cart"></i>
+            Buy Now
+          </button>
+        </div>
+
+        <div class="plan-card" data-operator="airtel">
+          <div class="plan-amount">₹299</div>
+          <div class="plan-validity">Valid for 28 days</div>
+          <div class="plan-details">
+            <div class="plan-benefit">
+              <i class="fas fa-wifi"></i>
+              <span>2GB/day</span>
+            </div>
+            <div class="plan-benefit">
+              <i class="fas fa-phone"></i>
+              <span>Unlimited calls</span>
+            </div>
+            <div class="plan-benefit">
+              <i class="fas fa-sms"></i>
+              <span>100 SMS/day</span>
+            </div>
+            <div class="plan-benefit">
+              <i class="fas fa-tv"></i>
+              <span>Disney+ Hotstar</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="margin-top: 15px; width: 100%;">
+            <i class="fas fa-shopping-cart"></i>
+            Buy Now
+          </button>
+        </div>
+
+        <!-- Jio Plans -->
+        <div class="plan-card popular" data-operator="jio">
+          <span class="popular-badge">Best Value</span>
+          <div class="plan-amount">₹149</div>
+          <div class="plan-validity">Valid for 24 days</div>
+          <div class="plan-details">
+            <div class="plan-benefit">
+              <i class="fas fa-wifi"></i>
+              <span>1GB/day</span>
+            </div>
+            <div class="plan-benefit">
+              <i class="fas fa-phone"></i>
+              <span>Unlimited calls</span>
+            </div>
+            <div class="plan-benefit">
+              <i class="fas fa-sms"></i>
+              <span>100 SMS/day</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="margin-top: 15px; width: 100%;">
+            <i class="fas fa-shopping-cart"></i>
+            Buy Now
+          </button>
+        </div>
+
+        <div class="plan-card" data-operator="jio">
+          <div class="plan-amount">₹399</div>
+          <div class="plan-validity">Valid for 28 days</div>
+          <div class="plan-details">
+            <div class="plan-benefit">
+              <i class="fas fa-wifi"></i>
+              <span>2.5GB/day</span>
+            </div>
+            <div class="plan-benefit">
+              <i class="fas fa-phone"></i>
+              <span>Unlimited calls</span>
+            </div>
+            <div class="plan-benefit">
+              <i class="fas fa-sms"></i>
+              <span>100 SMS/day</span>
+            </div>
+            <div class="plan-benefit">
+              <i class="fas fa-tv"></i>
+              <span>JioTV + JioCinema</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="margin-top: 15px; width: 100%;">
+            <i class="fas fa-shopping-cart"></i>
+            Buy Now
+          </button>
+        </div>
+
+        <!-- VI Plans -->
+        <div class="plan-card" data-operator="vi">
+          <div class="plan-amount">₹179</div>
+          <div class="plan-validity">Valid for 24 days</div>
+          <div class="plan-details">
+            <div class="plan-benefit">
+              <i class="fas fa-wifi"></i>
+              <span>1.5GB/day</span>
+            </div>
+            <div class="plan-benefit">
+              <i class="fas fa-phone"></i>
+              <span>Unlimited calls</span>
+            </div>
+            <div class="plan-benefit">
+              <i class="fas fa-sms"></i>
+              <span>100 SMS/day</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="margin-top: 15px; width: 100%;">
+            <i class="fas fa-shopping-cart"></i>
+            Buy Now
+          </button>
+        </div>
+
+        <div class="plan-card popular" data-operator="vi">
+          <span class="popular-badge">Special Offer</span>
+          <div class="plan-amount">₹299</div>
+          <div class="plan-validity">Valid for 28 days</div>
+          <div class="plan-details">
+            <div class="plan-benefit">
+              <i class="fas fa-wifi"></i>
+              <span>2GB/day</span>
+            </div>
+            <div class="plan-benefit">
+              <i class="fas fa-phone"></i>
+              <span>Unlimited calls</span>
+            </div>
+            <div class="plan-benefit">
+              <i class="fas fa-sms"></i>
+              <span>100 SMS/day</span>
+            </div>
+            <div class="plan-benefit">
+              <i class="fas fa-tv"></i>
+              <span>ZEE5 Premium</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="margin-top: 15px; width: 100%;">
+            <i class="fas fa-shopping-cart"></i>
+            Buy Now
+          </button>
+        </div>
+      </div>
+
+      <div class="view-more">
+        <button class="view-more-btn">
+          View More Plans
+          <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simple operator selection functionality
+    document.querySelectorAll('.operator-card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.operator-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        
+        // Filter plans by selected operator
+        const operator = card.dataset.operator;
+        document.querySelectorAll('.plan-card').forEach(plan => {
+          plan.style.display = plan.dataset.operator === operator ? 'block' : 'none';
+        });
+      });
+    });
+
+    // Initially show only Airtel plans (default selected)
+    document.querySelectorAll('.plan-card').forEach(plan => {
+      if (plan.dataset.operator !== 'airtel') {
+        plan.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Balance | NeoBank</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563EB;
+            --primary-light: #3B82F6;
+            --primary-dark: #1D4ED8;
+            --primary-extra-light: #DBEAFE;
+            --text: #2D3748;
+            --text-light: #718096;
+            --text-lighter: #A0AEC0;
+            --bg: #F8FAFC;
+            --card-bg: white;
+            --success: #48BB78;
+            --warning: #ED8936;
+            --error: #F56565;
+        }
+        
+        [data-theme="dark"] {
+            --primary: #60A5FA;
+            --primary-light: #3B82F6;
+            --primary-dark: #93C5FD;
+            --primary-extra-light: #1E3A8A;
+            --text: #E2E8F0;
+            --text-light: #A0AEC0;
+            --text-lighter: #718096;
+            --bg: #121212;
+            --card-bg: #1E1E1E;
+            --success: #68D391;
+            --warning: #F6AD55;
+            --error: #FC8181;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+            line-height: 1.5;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.15);
+            width: 100%;
+            max-width: 420px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(37, 99, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .header {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-weight: 700;
+            color: var(--primary-dark);
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo i {
+            font-size: 1.1em;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--primary-extra-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .balance {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 1rem;
+            padding: 1.75rem;
+            margin-bottom: 1.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .balance::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+            animation: shine 6s infinite linear;
+        }
+        
+        @keyframes shine {
+            0% { transform: rotate(30deg) translate(-10%, -10%); }
+            100% { transform: rotate(30deg) translate(10%, 10%); }
+        }
+        
+        .balance-label {
+            opacity: 0.9;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .balance-amount {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .balance-change {
+            font-size: 0.75rem;
+            background-color: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .balance-change.positive {
+            color: #A7F3A0;
+        }
+        
+        .balance-change.negative {
+            color: #FF9E9E;
+        }
+        
+        .account-number {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .account-number i {
+            cursor: pointer;
+        }
+        
+        .quick-actions {
+            display: flex;
+            justify-content: space-between;
+            margin: 1.5rem 0;
+            gap: 1rem;
+        }
+        
+        .quick-action {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .quick-action i {
+            width: 48px;
+            height: 48px;
+            background-color: var(--primary-extra-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+        
+        .quick-action span {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: var(--text-lighter);
+            font-size: 0.75rem;
+        }
+        
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--primary-extra-light);
+        }
+        
+        .divider::before {
+            margin-right: 1rem;
+        }
+        
+        .divider::after {
+            margin-left: 1rem;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 0.875rem;
+            border-radius: 0.75rem;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary-light);
+        }
+        
+        .updated {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .updated i {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.6; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.6; transform: scale(0.95); }
+        }
+        
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            color: var(--success);
+        }
+        
+        /* Dark mode toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 1.25rem;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <div class="card">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-university"></i>
+                <span>NeoBank</span>
+            </div>
+            <div class="user-avatar">JS</div>
+        </div>
+        
+        <div class="balance">
+            <div class="balance-label">Available Balance</div>
+            <div class="balance-amount">
+                $8,426.90
+                <span class="balance-change positive">
+                    <i class="fas fa-caret-up"></i> 2.4%
+                </span>
+            </div>
+            <div class="account-number">
+                •••• 7294
+                <i class="far fa-copy" title="Copy account number"></i>
+            </div>
+        </div>
+        
+        <div class="quick-actions">
+            <div class="quick-action">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Transfer</span>
+            </div>
+            <div class="quick-action">
+                <i class="fas fa-credit-card"></i>
+                <span>Pay</span>
+            </div>
+            <div class="quick-action">
+                <i class="fas fa-qrcode"></i>
+                <span>Scan</span>
+            </div>
+            <div class="quick-action">
+                <i class="fas fa-piggy-bank"></i>
+                <span>Save</span>
+            </div>
+        </div>
+        
+        <div class="divider">or</div>
+        
+        <div class="actions">
+            <button class="btn btn-primary">
+                <i class="fas fa-wallet"></i>
+                Top Up
+            </button>
+            <button class="btn btn-outline">
+                <i class="fas fa-history"></i>
+                History
+            </button>
+        </div>
+        
+        <div class="updated">
+            <i class="fas fa-circle"></i>
+            Updated just now
+        </div>
+        
+        <div class="security-badge">
+            <i class="fas fa-shield-alt"></i>
+            <span>Protected by NeoBank Security</span>
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // Check for saved theme preference or use preferred color scheme
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            body.setAttribute('data-theme', 'dark');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.removeAttribute('data-theme');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    </script>
+</body>
+</html>

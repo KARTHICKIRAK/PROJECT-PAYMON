@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wallet</title>
+    <style>
+        :root {
+            --primary-violet: #7E57C2;
+            --dark-violet: #5E35B1;
+            --light-violet: #B39DDB;
+            --lighter-violet: #EDE7F6;
+            --white: #FFFFFF;
+            --text-dark: #333333;
+            --text-light: #757575;
+            
+            /* Dark mode variables */
+            --dark-bg: #1a1a1a;
+            --dark-card: #2d2d2d;
+            --dark-text: #e0e0e0;
+            --dark-border: #444444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body {
+            background-color: var(--lighter-violet);
+            color: var(--text-dark);
+        }
+        
+        body.dark-mode {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+        }
+        
+        .wallet-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        
+        /* Dark mode toggle */
+        .dark-mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--light-violet);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .dark-mode-toggle svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .dark-mode-toggle .light-icon {
+            display: none;
+        }
+        
+        .dark-mode .dark-mode-toggle .dark-icon {
+            display: none;
+        }
+        
+        .dark-mode .dark-mode-toggle .light-icon {
+            display: block;
+            color: #fbbf24;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: var(--dark-violet);
+            font-size: 28px;
+        }
+        
+        .dark-mode .header h1 {
+            color: var(--light-violet);
+        }
+        
+        .user-profile {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--light-violet);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .dark-mode .user-profile {
+            background-color: var(--dark-violet);
+        }
+        
+        .balance-card {
+            background: linear-gradient(135deg, var(--primary-violet), var(--dark-violet));
+            color: var(--white);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(126, 87, 194, 0.2);
+        }
+        
+        .balance-title {
+            font-size: 16px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        
+        .balance-amount {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .balance-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--white);
+            color: var(--primary-violet);
+        }
+        
+        .btn-primary:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--white);
+            border: 1px solid var(--white);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .transactions-section h2 {
+            color: var(--dark-violet);
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .dark-mode .transactions-section h2 {
+            color: var(--light-violet);
+        }
+        
+        .transactions-list {
+            background-color: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .dark-mode .transactions-list {
+            background-color: var(--dark-card);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--lighter-violet);
+        }
+        
+        .dark-mode .transaction-item {
+            border-bottom: 1px solid var(--dark-border);
+        }
+        
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+        
+        .transaction-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--lighter-violet);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary-violet);
+        }
+        
+        .dark-mode .transaction-icon {
+            background-color: var(--dark-border);
+            color: var(--light-violet);
+        }
+        
+        .transaction-details h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .dark-mode .transaction-details h3 {
+            color: var(--dark-text);
+        }
+        
+        .transaction-details p {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .dark-mode .transaction-details p {
+            color: #a0a0a0;
+        }
+        
+        .transaction-amount {
+            font-weight: 600;
+        }
+        
+        .positive {
+            color: #4CAF50;
+        }
+        
+        .negative {
+            color: #F44336;
+        }
+    </style>
+</head>
+<body>
+    <button class="dark-mode-toggle">
+        <svg class="dark-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+        <svg class="light-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+    </button>
+
+    <div class="wallet-container">
+        <div class="header">
+            <h1>My Wallet</h1>
+            <div class="user-profile">JS</div>
+        </div>
+        
+        <div class="balance-card">
+            <div class="balance-title">Total Balance</div>
+            <div class="balance-amount">$4,287.50</div>
+            <div class="balance-actions">
+                <button class="btn btn-primary">Add Money</button>
+                <button class="btn btn-outline">Send Money</button>
+            </div>
+        </div>
+        
+        <div class="transactions-section">
+            <h2>Recent Transactions</h2>
+            <div class="transactions-list">
+                <!-- Transaction 1 -->
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <div class="transaction-icon">
+                            🛒
+                        </div>
+                        <div class="transaction-details">
+                            <h3>Amazon Purchase</h3>
+                            <p>June 25, 2023 • Shopping</p>
+                        </div>
+                    </div>
+                    <div class="transaction-amount negative">-$129.99</div>
+                </div>
+                
+                <!-- Transaction 2 -->
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <div class="transaction-icon">
+                            💰
+                        </div>
+                        <div class="transaction-details">
+                            <h3>Salary Deposit</h3>
+                            <p>June 24, 2023 • Income</p>
+                        </div>
+                    </div>
+                    <div class="transaction-amount positive">+$3,500.00</div>
+                </div>
+                
+                <!-- Transaction 3 -->
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <div class="transaction-icon">
+                            🍔
+                        </div>
+                        <div class="transaction-details">
+                            <h3>Burger King</h3>
+                            <p>June 23, 2023 • Food</p>
+                        </div>
+                    </div>
+                    <div class="transaction-amount negative">-$14.75</div>
+                </div>
+                
+                <!-- Transaction 4 -->
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <div class="transaction-icon">
+                            📱
+                        </div>
+                        <div class="transaction-details">
+                            <h3>App Store</h3>
+                            <p>June 22, 2023 • Subscription</p>
+                        </div>
+                    </div>
+                    <div class="transaction-amount negative">-$9.99</div>
+                </div>
+                
+                <!-- Transaction 5 -->
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <div class="transaction-icon">
+                            👕
+                        </div>
+                        <div class="transaction-details">
+                            <h3>Zara Clothing</h3>
+                            <p>June 20, 2023 • Shopping</p>
+                        </div>
+                    </div>
+                    <div class="transaction-amount negative">-$78.45</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode toggle functionality
+        const darkModeToggle = document.querySelector('.dark-mode-toggle');
+        const body = document.body;
+        
+        // Check for saved user preference or system preference
+        if (localStorage.getItem('darkMode') === 'true' || 
+            (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            body.classList.add('dark-mode');
+        }
+        
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        });
+    </script>
+</body>
+</html>

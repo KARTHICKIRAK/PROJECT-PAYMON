@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pay to Contact | NeoBank</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563EB;
+            --primary-light: #3B82F6;
+            --primary-dark: #1D4ED8;
+            --primary-extra-light: #DBEAFE;
+            --text: #2D3748;
+            --text-light: #718096;
+            --text-lighter: #A0AEC0;
+            --bg: #F8FAFC;
+            --card-bg: white;
+            --success: #48BB78;
+            --warning: #ED8936;
+            --error: #F56565;
+        }
+        
+        [data-theme="dark"] {
+            --primary: #60A5FA;
+            --primary-light: #3B82F6;
+            --primary-dark: #93C5FD;
+            --primary-extra-light: #1E3A8A;
+            --text: #E2E8F0;
+            --text-light: #A0AEC0;
+            --text-lighter: #718096;
+            --bg: #121212;
+            --card-bg: #1E1E1E;
+            --success: #68D391;
+            --warning: #F6AD55;
+            --error: #FC8181;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+            line-height: 1.5;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.15);
+            width: 100%;
+            max-width: 420px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(37, 99, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .header {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-weight: 700;
+            color: var(--primary-dark);
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo i {
+            font-size: 1.1em;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--primary-extra-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .contact-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--primary-extra-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border: 3px solid var(--primary-light);
+        }
+        
+        .contact-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .contact-email {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+        
+        .contact-account {
+            font-size: 0.875rem;
+            background-color: var(--primary-extra-light);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            color: var(--primary-dark);
+        }
+        
+        .payment-section {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .payment-section::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+            animation: shine 6s infinite linear;
+        }
+        
+        @keyframes shine {
+            0% { transform: rotate(30deg) translate(-10%, -10%); }
+            100% { transform: rotate(30deg) translate(10%, 10%); }
+        }
+        
+        .amount-input {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        
+        .currency {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .amount-input input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(255,255,255,0.5);
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            width: 100%;
+            text-align: center;
+            padding: 0.25rem 0;
+            outline: none;
+        }
+        
+        .amount-input input:focus {
+            border-bottom-color: white;
+        }
+        
+        .quick-amounts {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .quick-amount {
+            flex: 1;
+            background-color: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .quick-amount:hover {
+            background-color: rgba(255,255,255,0.3);
+        }
+        
+        .payment-message {
+            margin-top: 1rem;
+        }
+        
+        .payment-message input {
+            width: 100%;
+            background-color: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            color: white;
+            outline: none;
+        }
+        
+        .payment-message input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .payment-message input:focus {
+            border-color: white;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 0.875rem;
+            border-radius: 0.75rem;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary-light);
+        }
+        
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            color: var(--success);
+        }
+        
+        /* Dark mode toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 1.25rem;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <div class="card">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-university"></i>
+                <span>NeoBank</span>
+            </div>
+            <div class="user-avatar">JS</div>
+        </div>
+        
+        <div class="contact-info">
+            <div class="contact-avatar">JD</div>
+            <div class="contact-name">John Doe</div>
+            <div class="contact-email">john.doe@example.com</div>
+            <div class="contact-account">•••• 4582</div>
+        </div>
+        
+        <div class="payment-section">
+            <div>Send Payment To</div>
+            <div class="amount-input">
+                <span class="currency">$</span>
+                <input type="number" placeholder="0.00" min="0" step="0.01">
+            </div>
+            
+            <div class="quick-amounts">
+                <button class="quick-amount">$10</button>
+                <button class="quick-amount">$25</button>
+                <button class="quick-amount">$50</button>
+                <button class="quick-amount">$100</button>
+            </div>
+            
+            <div class="payment-message">
+                <input type="text" placeholder="Add a message (optional)">
+            </div>
+        </div>
+        
+        <div class="actions">
+            <button class="btn btn-outline">
+                <i class="fas fa-times"></i>
+                Cancel
+            </button>
+            <button class="btn btn-primary">
+                <i class="fas fa-paper-plane"></i>
+                Send Payment
+            </button>
+        </div>
+        
+        <div class="security-badge">
+            <i class="fas fa-shield-alt"></i>
+            <span>Protected by NeoBank Security</span>
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // Check for saved theme preference or use preferred color scheme
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            body.setAttribute('data-theme', 'dark');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.removeAttribute('data-theme');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Quick amount buttons functionality
+        document.querySelectorAll('.quick-amount').forEach(button => {
+            button.addEventListener('click', () => {
+                const amount = button.textContent.replace('$', '');
+                document.querySelector('.amount-input input').value = amount;
+            });
+        });
+    </script>
+</body>
+</html>

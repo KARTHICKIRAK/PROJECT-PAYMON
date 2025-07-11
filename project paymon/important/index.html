@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PaymentApp Pro</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Scanner Modal -->
+  <div class="scanner-container" id="scannerModal">
+    <div class="scanner-box">
+      <div class="scanner-line"></div>
+    </div>
+    <div class="scanner-controls">
+      <button class="scanner-btn" onclick="scanQRCode()">
+        <i class="fas fa-qrcode"></i> Scan Code
+      </button>
+      <button class="scanner-btn secondary" onclick="closeScanner()">
+        <i class="fas fa-times"></i> Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <header class="header">
+    <div class="logo">
+      <h1><i class="fas fa-wallet"></i> PaymentApp Pro</h1>
+    </div>
+    <div class="search-container">
+      <input type="text" class="search-bar" placeholder="Search for transactions..." aria-label="Search transactions">
+    </div>
+    <div class="profile">
+      <div class="hamburger" id="hamburger">
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+      </div>
+      
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#" onclick="showDashboard()"><i class="fas fa-home"></i> Dashboard</a></li>
+        <li><a href="#" onclick="showTransactions()"><i class="fas fa-history"></i> Transactions</a></li>
+        <li><a href="#" onclick="showSettings()"><i class="fas fa-cog"></i> Settings</a></li>
+      </ul>
+      
+      <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle dark mode"><i class="fas fa-adjust"></i></button>
+      <div class="profile-dropdown" id="profileDropdown">
+        <button class="profile-btn" id="profileBtn">
+          <img src="https://ui-avatars.com/api/?name=John+Doe&background=6c5ce7&color=fff" alt="Profile">
+          <span id="usernameDisplay">John</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <a href="#" class="dropdown-item"><i class="fas fa-user"></i> Profile</a>
+          <a href="#" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a>
+          <a href="#" class="dropdown-item"><i class="fas fa-bell"></i> Notifications</a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- Dashboard Section -->
+    <section id="dashboardSection">
+      <div class="dashboard">
+        <div class="dashboard-card balance-card">
+          <div class="card-title">Total Balance</div>
+          <div class="balance-amount">₹178.25</div>
+          <div class="balance-details">
+            <div class="income">
+              <span>Income</span>
+              <span class="income-amount">₹45,000.00</span>
+            </div>
+            <div class="expense">
+              <span>Expense</span>
+              <span class="expense-amount">₹12,850.75</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="dashboard-card">
+          <div class="card-title">Quick Actions</div>
+          <div class="quick-actions">
+            <button class="quick-action-btn" onclick="showPaymentModal('contacts')">
+              <i class="fas fa-user-friends"></i>
+              <span>Pay Contact</span>
+            </button>
+            <button class="quick-action-btn" onclick="showScanner()">
+              <i class="fas fa-qrcode"></i>
+              <span>Scan & Pay</span>
+            </button>
+            <button class="quick-action-btn" onclick="checkBalance()">
+              <i class="fas fa-wallet"></i>
+              <span>Check Balance</span>
+            </button>
+            <button class="quick-action-btn" onclick="showTransactions()">
+              <i class="fas fa-history"></i>
+              <span>Transactions</span>
+            </button>
+          </div>
+        </div>
+        
+        <div class="dashboard-card">
+          <div class="card-title">Recent Transactions</div>
+          <ul class="transactions-list">
+            <li class="transaction-item">
+              <div class="transaction-details">
+                <div class="transaction-date">Jun 15, 2023 · 10:30 AM</div>
+                <div class="transaction-description">Grocery Store Purchase</div>
+                <div class="transaction-category">Shopping</div>
+              </div>
+              <div class="transaction-amount debit">- ₹1,250.75</div>
+            </li>
+            <li class="transaction-item">
+              <div class="transaction-details">
+                <div class="transaction-date">Jun 14, 2023 · 3:45 PM</div>
+                <div class="transaction-description">Salary Credit</div>
+                <div class="transaction-category">Salary</div>
+              </div>
+              <div class="transaction-amount credit">+ ₹45,000.00</div>
+            </li>
+            <li class="transaction-item">
+              <div class="transaction-details">
+                <div class="transaction-date">Jun 12, 2023 · 9:15 AM</div>
+                <div class="transaction-description">Electricity Bill Payment</div>
+                <div class="transaction-category">Bills</div>
+              </div>
+              <div class="transaction-amount debit">- ₹1,850.50</div>
+            </li>
+          </ul>
+          <a href="#" class="view-all" onclick="showTransactions()">View All Transactions →</a>
+        </div>
+      </div>
+      
+      <!-- UPI Services Section -->
+      <section class="upi-services-container">
+        <h2 class="section-title"><i class="fas fa-mobile-alt"></i> UPI Services</h2>
+        <div class="upi-box" onclick="showPaymentModal('wallet')">
+          <div class="upi-icon">
+            <i class="fas fa-wallet"></i>
+          </div>
+          <div class="upi-details">
+            <h3>Wallet</h3>
+            <p>Add money to your wallet for quick payments</p>
+          </div>
+        </div>
+        <div class="upi-box" onclick="showPaymentModal('upi')">
+          <div class="upi-icon">
+            <i class="fas fa-id-card"></i>
+          </div>
+          <div class="upi-details">
+            <h3>UPI ID</h3>
+            <p>Create or manage your UPI ID</p>
+          </div>
+        </div>
+        <div class="upi-box" onclick="showPaymentModal('upilite')">
+          <div class="upi-icon">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <div class="upi-details">
+            <h3>UPI Lite</h3>
+            <p>Instant small value payments without PIN</p>
+          </div>
+        </div>
+        <div class="upi-box" onclick="showPaymentModal('recharge')">
+          <div class="upi-icon">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <div class="upi-details">
+            <h3>Recharge</h3>
+            <p>Mobile/DTH recharge & bill payments</p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Payment Services Section -->
+      <section class="payment-container">
+        <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Payment Services</h2>
+        <div class="payment-box" onclick="showPaymentModal('contacts')">
+          <i class="fas fa-user-friends"></i>
+          <h3>Pay Contacts</h3>
+          <p>Transfer money to your saved contacts directly.</p>
+        </div>
+        <div class="payment-box" onclick="showPaymentModal('phone')">
+          <i class="fas fa-phone-alt"></i>
+          <h3>Pay to Phone</h3>
+          <p>Make payments to any phone number.</p>
+        </div>
+        <div class="payment-box" onclick="showPaymentModal('bank')">
+          <i class="fas fa-university"></i>
+          <h3>Bank Transfer</h3>
+          <p>Transfer funds to any bank account.</p>
+        </div>
+        <div class="payment-box" onclick="showPaymentModal('self')">
+          <i class="fas fa-exchange-alt"></i>
+          <h3>Self Transfer</h3>
+          <p>Transfer funds to your own account.</p>
+          <span class="badge new-badge">New</span>
+        </div>
+      </section>
+    </section>
+
+    <!-- Full Transactions Section -->
+    <p id="no-results"><i class="fas fa-search"></i> No matches found. Try a different search term.</p>
+
+    <section id="transactionsSection" style="display: none;">
+      <div class="transactions-container">
+        <h2 class="section-title"><i class="fas fa-list"></i> Transaction History</h2>
+        
+        <div class="filter-container">
+          <button class="filter-btn active" onclick="filterTransactions('all')">All</button>
+          <button class="filter-btn" onclick="filterTransactions('credit')">Credits</button>
+          <button class="filter-btn" onclick="filterTransactions('debit')">Debits</button>
+          <button class="filter-btn" onclick="filterTransactions('recent')">Recent</button>
+          <button class="filter-btn" onclick="filterTransactions('large')">Large Amounts</button>
+        </div>
+        
+        <div id="transactionsLoading" class="loading-text" style="display: none;">
+          <div class="loading"></div>
+          <span>Loading transactions...</span>
+        </div>
+        
+        <ul id="transactionsList" class="transactions-list">
+          <!-- Transaction items will be dynamically added here -->
+        </ul>
+        <div class="pagination">
+            <button id="prevPage" disabled><i class="fas fa-chevron-left"></i> Previous</button>
+            <button id="nextPage">Next <i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Payment Modal -->
+  <div id="paymentModal" class="modal" role="dialog" aria-labelledby="paymentModalTitle" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="paymentModalTitle"><i class="fas fa-money-bill-wave"></i> <span id="paymentModalTitleText">Make Payment</span></h2>
+        <button class="close-btn" onclick="closePaymentModal()" aria-label="Close modal">&times;</button>
+      </div>
+      <form id="paymentForm" onsubmit="event.preventDefault(); processPayment();">
+        <div class="form-group" id="recipientGroup">
+          <label for="recipient" id="recipientLabel">Recipient</label>
+          <input type="text" id="recipient" class="form-control" placeholder="Enter recipient" aria-label="Recipient" required>
+          <div id="recipientError" class="error-message"></div>
+        </div>
+        <div class="form-group">
+          <label for="amount">Amount (₹)</label>
+          <input type="number" id="amount" class="form-control" placeholder="Enter amount" aria-label="Amount" min="1" step="0.01" required>
+          <div id="amountError" class="error-message"></div>
+        </div>
+        <div class="form-group" id="accountGroup" style="display: none;">
+          <label for="accountNumber">Account Number</label>
+          <input type="text" id="accountNumber" class="form-control" placeholder="Enter account number" aria-label="Account number">
+          <div id="accountError" class="error-message"></div>
+        </div>
+        <div class="form-group" id="ifscGroup" style="display: none;">
+          <label for="ifscCode">IFSC Code</label>
+          <input type="text" id="ifscCode" class="form-control" placeholder="Enter IFSC code" aria-label="IFSC code">
+          <div id="ifscError" class="error-message"></div>
+        </div>
+        <div class="form-group">
+          <label for="paymentNote">Note (Optional)</label>
+          <input type="text" id="paymentNote" class="form-control" placeholder="Add a note" aria-label="Payment note">
+        </div>
+        <button type="submit" class="btn btn-primary" id="paymentBtn">
+          <span id="paymentBtnText">Send Payment</span>
+          <span id="paymentSpinner" class="loading" style="display: none;"></span>
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="closePaymentModal()">Cancel</button>
+        <div id="paymentError" class="error-message"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgotPasswordModal" class="modal" role="dialog" aria-labelledby="forgotPasswordTitle" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="forgotPasswordTitle"><i class="fas fa-key"></i> Reset Password</h2>
+        <button class="close-btn" onclick="closeForgotPasswordModal()" aria-label="Close modal">&times;</button>
+      </div>
+      <form id="forgotPasswordForm" onsubmit="event.preventDefault(); resetPassword();">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" class="form-control" placeholder="Enter your email" aria-label="Email address" required>
+          <div id="emailError" class="error-message"></div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="resetPasswordBtn">
+          <span id="resetPasswordBtnText">Send Reset Link</span>
+          <span id="resetPasswordSpinner" class="loading" style="display: none;"></span>
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="closeForgotPasswordModal()">Cancel</button>
+        <div id="resetPasswordError" class="error-message"></div>
+        <div id="resetPasswordSuccess" class="error-message" style="color: var(--success-color); display: none;"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal" role="dialog" aria-labelledby="settingsModalTitle" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="settingsModalTitle"><i class="fas fa-cog"></i> Settings</h2>
+        <button class="close-btn" onclick="closeSettingsModal()" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="form-group">
+        <h3 style="margin-bottom: 15px;">Account Settings</h3>
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+          <img src="https://ui-avatars.com/api/?name=John+Doe&background=6c5ce7&color=fff" alt="Profile" style="width: 60px; height: 60px; border-radius: 50%;">
+          <div>
+            <h4 style="margin-bottom: 5px;" id="settingsUsername">John Doe</h4>
+            <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 14px;">Change Photo</button>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" class="form-control" value="John Doe" aria-label="Full name">
+        </div>
+        
+        <div class="form-group">
+          <label for="emailSettings">Email</label>
+          <input type="email" id="emailSettings" class="form-control" value="john.doe@example.com" aria-label="Email">
+        </div>
+        
+        <div class="form-group">
+          <label for="phoneNumber">Phone Number</label>
+          <input type="tel" id="phoneNumber" class="form-control" value="+91 9876543210" aria-label="Phone number">
+        </div>
+        
+        <h3 style="margin: 25px 0 15px;">Security</h3>
+        <button class="btn btn-secondary" style="width: 100%; text-align: left;" onclick="showChangePassword()">
+          <i class="fas fa-lock"></i> Change Password
+        </button>
+        
+        <button class="btn btn-secondary" style="width: 100%; text-align: left; margin-top: 10px;" onclick="showTwoFactorAuth()">
+          <i class="fas fa-shield-alt"></i> Two-Factor Authentication
+        </button>
+        
+        <h3 style="margin: 25px 0 15px;">Preferences</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <span>Dark Mode</span>
+          <label class="switch">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleTheme()">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <span>Notifications</span>
+          <label class="switch">
+            <input type="checkbox" id="notificationsToggle" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <span>Biometric Login</span>
+          <label class="switch">
+            <input type="checkbox" id="biometricToggle">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        
+        <!-- Language Selection -->
+        <h3 style="margin: 25px 0 15px;">Language</h3>
+        <div class="form-group">
+          <label for="languageSelect">App Language</label>
+          <select id="languageSelect" class="form-control" aria-label="Select language">
+            <option value="en">English</option>
+            <option value="ta">தமிழ் (Tamil)</option>
+            <option value="ml">മലയാളം (Malayalam)</option>
+            <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+            <option value="bn">বাংলা (Bengali)</option>
+            <option value="mr">मराठी (Marathi)</option>
+            <option value="gu">ગુજરાતી (Gujarati)</option>
+             <option value="te">తెలుగు (Telugu)</option>
+            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+          </select>
+        </div>
+        
+        <button class="btn btn-primary" style="margin-top: 30px;" onclick="saveSettings()">
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div id="changePasswordModal" class="modal" role="dialog" aria-labelledby="changePasswordTitle" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="changePasswordTitle"><i class="fas fa-lock"></i> Change Password</h2>
+        <button class="close-btn" onclick="closeChangePasswordModal()" aria-label="Close modal">&times;</button>
+      </div>
+      <form id="changePasswordForm" onsubmit="event.preventDefault(); updatePassword();">
+        <div class="form-group">
+          <label for="currentPassword">Current Password</label>
+          <input type="password" id="currentPassword" class="form-control" placeholder="Enter current password" aria-label="Current password" required>
+          <div id="currentPasswordError" class="error-message"></div>
+        </div>
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <input type="password" id="newPassword" class="form-control" placeholder="Enter new password" aria-label="New password" required>
+          <div id="newPasswordError" class="error-message"></div>
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm New Password</label>
+          <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm new password" aria-label="Confirm new password" required>
+          <div id="confirmPasswordError" class="error-message"></div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="changePasswordBtn">
+          <span id="changePasswordBtnText">Update Password</span>
+          <span id="changePasswordSpinner" class="loading" style="display: none;"></span>
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="closeChangePasswordModal()">Cancel</button>
+        <div id="changePasswordError" class="error-message"></div>
+        <div id="changePasswordSuccess" class="error-message" style="color: var(--success-color); display: none;"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Goal Modal -->
+  <div id="addGoalModal" class="modal" role="dialog" aria-labelledby="addGoalTitle" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="addGoalTitle"><i class="fas fa-piggy-bank"></i> Add Savings Goal</h2>
+        <button class="close-btn" onclick="closeAddGoalModal()" aria-label="Close modal">&times;</button>
+      </div>
+      <form id="addGoalForm" onsubmit="event.preventDefault(); addGoal();">
+        <div class="form-group">
+          <label for="goalName">Goal Name</label>
+          <input type="text" id="goalName" class="form-control" placeholder="e.g. Vacation Fund" aria-label="Goal name" required>
+          <div id="goalNameError" class="error-message"></div>
+        </div>
+        <div class="form-group">
+          <label for="targetAmount">Target Amount (₹)</label>
+          <input type="number" id="targetAmount" class="form-control" placeholder="Enter target amount" aria-label="Target amount" min="1" required>
+          <div id="targetAmountError" class="error-message"></div>
+        </div>
+        <div class="form-group">
+          <label for="currentAmount">Current Amount (₹)</label>
+          <input type="number" id="currentAmount" class="form-control" placeholder="Enter current amount saved" aria-label="Current amount" min="0">
+          <div id="currentAmountError" class="error-message"></div>
+        </div>
+        <div class="form-group">
+          <label for="targetDate">Target Date</label>
+          <input type="date" id="targetDate" class="form-control" aria-label="Target date" required>
+          <div id="targetDateError" class="error-message"></div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="addGoalBtn">
+          <span id="addGoalBtnText">Create Goal</span>
+          <span id="addGoalSpinner" class="loading" style="display: none;"></span>
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="closeAddGoalModal()">Cancel</button>
+        <div id="addGoalError" class="error-message"></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay" style="display: none;"></div>
+  
+  <div id="notification" class="notification"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

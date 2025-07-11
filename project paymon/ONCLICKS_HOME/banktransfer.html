@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Transfer</title>
+    <style>
+        :root {
+            --primary-violet: #7E57C2;
+            --dark-violet: #5E35B1;
+            --light-violet: #B39DDB;
+            --lighter-violet: #EDE7F6;
+            --white: #FFFFFF;
+            --text-dark: #333333;
+            --text-light: #757575;
+            --error-red: #F44336;
+            --success-green: #4CAF50;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--lighter-violet);
+            color: var(--text-dark);
+        }
+        
+        .transfer-container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: var(--dark-violet);
+            font-size: 28px;
+        }
+        
+        .back-btn {
+            color: var(--primary-violet);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .back-btn svg {
+            margin-right: 5px;
+        }
+        
+        .transfer-card {
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .transfer-card h2 {
+            color: var(--dark-violet);
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--light-violet);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-violet);
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon .form-control {
+            padding-left: 40px;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-violet);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-violet);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--dark-violet);
+        }
+        
+        .transfer-info {
+            background-color: var(--lighter-violet);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .transfer-info p {
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+        
+        .transfer-info p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .error-message {
+            color: var(--error-red);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .success-message {
+            background-color: var(--success-green);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        .bank-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--lighter-violet);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: var(--primary-violet);
+        }
+        
+        .bank-selector {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid var(--light-violet);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .bank-selector:hover {
+            background-color: var(--lighter-violet);
+        }
+        
+        .bank-selector.active {
+            border-color: var(--primary-violet);
+            background-color: var(--lighter-violet);
+        }
+        
+        .bank-selector .bank-info {
+            flex-grow: 1;
+        }
+        
+        .bank-selector .bank-info h3 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        
+        .bank-selector .bank-info p {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        @media (max-width: 600px) {
+            .transfer-container {
+                padding: 15px;
+            }
+            
+            .transfer-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="transfer-container">
+        <div class="header">
+            <a href="wallet.html" class="back-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Back
+            </a>
+            <h1>Bank Transfer</h1>
+            <div style="width: 60px;"></div> <!-- Spacer for alignment -->
+        </div>
+        
+        <div class="success-message" id="successMessage">
+            Transfer completed successfully!
+        </div>
+        
+        <div class="transfer-card">
+            <h2>Transfer Details</h2>
+            
+            <div class="form-group">
+                <label for="fromAccount">From Account</label>
+                <select id="fromAccount" class="form-control">
+                    <option value="main">Main Account (•••• 4567)</option>
+                    <option value="savings">Savings Account (•••• 8910)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>To Bank</label>
+                
+                <div class="bank-selector active">
+                    <div class="bank-logo">
+                        <i>🏦</i>
+                    </div>
+                    <div class="bank-info">
+                        <h3>Same Bank Transfer</h3>
+                        <p>Instant transfer to accounts in our bank</p>
+                    </div>
+                </div>
+                
+                <div class="bank-selector">
+                    <div class="bank-logo">
+                        <i>🌐</i>
+                    </div>
+                    <div class="bank-info">
+                        <h3>Other Local Banks</h3>
+                        <p>Transfer to other local banks (1-2 business days)</p>
+                    </div>
+                </div>
+                
+                <div class="bank-selector">
+                    <div class="bank-logo">
+                        <i>✈️</i>
+                    </div>
+                    <div class="bank-info">
+                        <h3>International Transfer</h3>
+                        <p>Transfer to banks outside the country</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="accountNumber">Account Number</label>
+                <div class="input-with-icon">
+                    <span class="input-icon">#</span>
+                    <input type="text" id="accountNumber" class="form-control" placeholder="Enter account number">
+                </div>
+                <div class="error-message" id="accountNumberError">Please enter a valid account number</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="accountName">Account Name</label>
+                <input type="text" id="accountName" class="form-control" placeholder="Recipient name" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <div class="input-with-icon">
+                    <span class="input-icon">$</span>
+                    <input type="number" id="amount" class="form-control" placeholder="0.00">
+                </div>
+                <div class="error-message" id="amountError">Please enter a valid amount</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description (Optional)</label>
+                <input type="text" id="description" class="form-control" placeholder="e.g. Rent payment">
+            </div>
+            
+            <div class="transfer-info">
+                <p><strong>Transfer Fee:</strong> $0.00</p>
+                <p><strong>Estimated Arrival:</strong> Immediately</p>
+                <p><strong>Available Balance:</strong> $4,287.50</p>
+            </div>
+            
+            <button class="btn btn-primary" id="transferBtn">Continue Transfer</button>
+        </div>
+    </div>
+
+    <script>
+        // Simple form validation example
+        document.getElementById('transferBtn').addEventListener('click', function() {
+            let isValid = true;
+            const accountNumber = document.getElementById('accountNumber').value;
+            const amount = document.getElementById('amount').value;
+            
+            // Validate account number
+            if (!accountNumber || accountNumber.length < 8) {
+                document.getElementById('accountNumberError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('accountNumberError').style.display = 'none';
+            }
+            
+            // Validate amount
+            if (!amount || parseFloat(amount) <= 0) {
+                document.getElementById('amountError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('amountError').style.display = 'none';
+            }
+            
+            // If valid, show success message
+            if (isValid) {
+                document.getElementById('successMessage').style.display = 'block';
+                // In a real app, you would submit the form here
+            }
+        });
+        
+        // Bank selector functionality
+        const bankSelectors = document.querySelectorAll('.bank-selector');
+        bankSelectors.forEach(selector => {
+            selector.addEventListener('click', function() {
+                bankSelectors.forEach(s => s.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Simulate account name lookup (in a real app, this would be an API call)
+        document.getElementById('accountNumber').addEventListener('input', function(e) {
+            if (e.target.value.length >= 8) {
+                document.getElementById('accountName').value = "John Smith";
+            } else {
+                document.getElementById('accountName').value = "";
+            }
+        });
+    </script>
+</body>
+</html>
